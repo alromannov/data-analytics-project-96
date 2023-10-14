@@ -1,6 +1,6 @@
 with tab as (
     select distinct on (visitor_id)
-        visitor_id,
+        s.visitor_id,
         visit_date,
         source,
         medium,
@@ -11,10 +11,13 @@ with tab as (
         closing_reason,
         status_id
     from sessions as s
-    left join leads on s.visitor_id = leads.visitor_id
-where medium != 'organic' and s.visit_date <= l.created_at
+    left join leads as l
+        on
+            s.visitor_id = l.visitor_id
+            and s.visit_date <= l.created_at
+    where medium != 'organic'
 )
 
 select * from tab
 order by
-amount desc nulls last, visit_date asc, source asc, medium asc, campaign asc
+    amount desc nulls last, visit_date asc, source asc, medium asc, campaign asc
