@@ -154,3 +154,22 @@ with tab as (
 
 select PERCENTILE_CONT(0.9) within group (order by (created_at::date - fvd::date)) as ninetieth_percentile_lead_lifetime
 from tab
+
+--update 
+with tab as (
+    select distinct
+        created_at,
+        (s.visitor_id),
+        FIRST_VALUE(s.visit_date)
+            over (partition by s.visitor_id order by visit_date)
+        as fvd
+    from sessions as s
+    left join leads as l
+        on
+            s.visitor_id = l.visitor_id
+            and s.visit_date <= l.created_at
+    where medium != 'organic' 
+)
+
+select PERCENTILE_CONT(0.9) within group (order by (created_at::date - fvd::date)) as ninetieth_percentile_lead_lifetime
+from tab
