@@ -73,6 +73,20 @@ select ROUND(((
 from sessions s 
 left join leads l using(visitor_id)
 
+--update Какая конверсия из клика в лид? А из лида в оплату?
+select ROUND(((
+        select count(distinct(lead_id))
+        from sessions s 
+        left join leads l using(visitor_id)
+        where lead_id is not null
+        ) * 100.00) / count(distinct(visitor_id)), 2) as visit_to_lead,
+        (select count(lead_id)
+         from leads l
+         where status_id = 142
+         ) * 100/count(l.lead_id) as leads_to_buy
+from sessions s 
+left join leads l using(visitor_id)
+
 --Сколько мы тратим по разным каналам в динамике?
 with tab as (
 select campaign_date::date, utm_source, utm_medium, utm_campaign, sum(daily_spent) as total_cost
