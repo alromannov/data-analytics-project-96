@@ -13,7 +13,7 @@ select
         when source like 'facebook%' then 'facebook'
         when source like 'vk%' then 'vk' else source
     end) as source,
-    extract(day from visit_date) as day_number,
+    date_trunc('day', visit_date) as day_order,
     count(distinct visitor_id)
 from sessions
 group by 1, 2
@@ -31,7 +31,7 @@ select
         when source like 'facebook%' then 'facebook'
         when source like 'vk%' then 'vk' else source
     end) as source,
-    extract(month from visit_date) as month_number,
+    date_trunc('month', visit_date) as month_order,
     count(distinct visitor_id)
 from sessions
 group by 1, 2
@@ -48,7 +48,7 @@ select
         when source like 'facebook%' then 'facebook'
         when source like 'vk%' then 'vk' else source
     end) as source,
-    extract(week from visit_date) as week_number,
+    date_trunc('week', visit_date) as week_order,
     count(distinct visitor_id)
 from sessions
 group by 1, 2
