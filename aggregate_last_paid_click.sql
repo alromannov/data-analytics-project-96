@@ -42,10 +42,10 @@ lpc as (
 
 select
     visit_date::date,
-    source,
-    medium,
-    campaign,
     count(visitor_id) as visitors_count,
+    source as utm_source,
+    medium as utm_medium,
+    campaign as utm_campaign,
     total_cost,
     sum(case when lead_id is not null then 1 else 0 end) as leads_count,
     sum(case when s.status_id = 142 then 1 else 0 end) as purchases_count,
@@ -57,6 +57,6 @@ left join ads as ad
         and s.medium = ad.utm_medium and s.campaign = ad.utm_campaign
         and s.visit_date = ad.campaign_date
 where rnk = 1
-group by 1, 2, 3, 4, 6
+group by 1, 3, 4, 5, 6
 order by 9 desc nulls last, 1 asc, 5 desc, 2 asc, 3 asc, 4 asc
 limit 15
